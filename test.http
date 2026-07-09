@@ -1,0 +1,47 @@
+GET http://localhost:8080/
+
+{
+    "id": 1,
+    "full_name": "Boris",
+    "age": 20
+}
+
+###
+
+GET http://localhost:8080/
+
+{
+    "id": 1,
+    "age": 20
+}
+
+###
+GET http://localhost:8080/api/health
+
+###
+POST http://localhost:8080/api/health
+
+###
+GET http://localhost:8080/api/CreateUser
+
+{
+    "id": 1,
+    "full_name": "Boris",
+    "age": 20
+}
+
+###
+GET http://localhost:8080/api/CreateUser
+
+{
+    "full_name": "Andrew",
+    "age": 20,
+    "phone_number": "+7183612389"
+}
+
+###
+GET http://localhost:8080/api/CreateUser
+
+{
+    "full_name": "Nikita",
+}

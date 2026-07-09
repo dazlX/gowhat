@@ -1,0 +1,49 @@
+package logger
+
+import (
+	"fmt"
+	"gowhat/internal/utils"
+	"os"
+	"path/filepath"
+	"time"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+)
+
+func NewLogger() (*zap.Logger, func() error, error) {
+	logLevel := utils.GetEnv("LOG_LEVEL", "DEBUG")
+	lvl := zap.NewAtomicLevel()
+	if err := lvl.UnmarshalText([]byte(logLevel)); err != nil {
+		return nil, nil, fmt.Errorf("Logger level error: %w", err)
+	}
+
+	if err := os.MkdirAll("logs", 07555); err != nil {
+		return nil, nil, fmt.Errorf("Error create logs folder: %w", err)
+	}
+
+	timestamp := time.Now().UTC().Format("2006-01-02T15-04-05.000000")
+	logFilePath := filepath.Join("logs", fmt.Sprintf("%s.log", timestamp))
+
+	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return nil, nil, fmt.Errorf("Open file error: %w", err)
+	}
+
+	cfg := zap.NewDevelopmentEncoderConfig()
+	cfg.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02T15:04:05.000000")
+	encoder := zapcore.NewConsoleEncoder(cfg)
+
+	core := zapcore.NewTee(
+		zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), lvl),
+		zapcore.NewCore(encoder, zapcore.AddSync(logFile), lvl),
+	)
+
+	logger := zap.New(
+		core,
+		zap.AddCaller(),
+		zap.AddStacktrace(zapcore.ErrorLevel),
+	)
+
+	return logger, logFile.Close, nil
+}
