@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"gowhat/internal/config"
+	"gowhat/internal/handlers"
+	"gowhat/internal/handlers/middleware"
+	"gowhat/internal/handlers/usershandler"
 	"gowhat/internal/logger"
 	"gowhat/internal/repository"
-	"gowhat/internal/transport"
-	"gowhat/internal/transport/middleware"
+	"gowhat/internal/service/users"
 	"os"
 	"os/signal"
 	"syscall"
@@ -41,13 +43,15 @@ func main() {
 	}
 
 	repo := repository.NewUserRepository(db)
-	hCfg := transport.NewHandlerConfig(log, repo)
+	service := users.NewService(repo)
+	hCfg := usershandler.NewHandlerConfig(log, service)
+	// usershandler.NewHandlerConfig(log, service)
+	userSwitch := usershandler.Switch(hCfg)
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", middleware.Logger(transport.GetUser, log))
-	mux.HandleFunc("/api/health", middleware.Logger(transport.Health, log))
-	mux.HandleFunc("/api/CreateUser", middleware.Logger(hCfg.CreateUserHandler, log))
+	mux.HandleFunc("/api/health", middleware.Logger(handlers.Health, log))
+	mux.HandleFunc("/api/users", middleware.Logger(userSwitch, log))
 	port := ":8080"
 
 	server := &http.Server{

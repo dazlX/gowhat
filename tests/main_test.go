@@ -2,8 +2,8 @@ package tests
 
 import (
 	"gowhat/internal/config"
+	"gowhat/internal/handlers"
 	"gowhat/internal/logger"
-	"gowhat/internal/transport"
 	"log"
 	"net/http"
 	"testing"
@@ -26,7 +26,7 @@ func TestMain(m *testing.M) {
 
 	loge.Debug("Test")
 
-	http.HandleFunc("/", transport.GetUser)
+	http.HandleFunc("/", handlers.GetUser)
 
 	port := ":8080"
 

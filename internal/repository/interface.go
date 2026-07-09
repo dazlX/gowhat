@@ -1,12 +1,11 @@
 package repository
 
 import (
-	"database/sql"
 	"gowhat/internal/models"
 )
 
 type RepositoryInterface interface {
-	CreateUser(db *sql.DB, user models.User) (bool, error)
-	UpdateUser()
-	DeleteUser()
+	Create(user models.User) error
+	Delete(user models.User) error
+	Update()
 }

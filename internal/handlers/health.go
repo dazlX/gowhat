@@ -1,4 +1,4 @@
-package transport
+package handlers
 
 import (
 	"gowhat/internal/utils"

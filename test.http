@@ -1,37 +1,11 @@
-GET http://localhost:8080/
-
-{
-    "id": 1,
-    "full_name": "Boris",
-    "age": 20
-}
+@baseURL = http://localhost:8080
 
 ###
+GET {{baseURL}}/api/health
 
-GET http://localhost:8080/
-
-{
-    "id": 1,
-    "age": 20
-}
-
-###
-GET http://localhost:8080/api/health
-
-###
-POST http://localhost:8080/api/health
-
-###
-GET http://localhost:8080/api/CreateUser
-
-{
-    "id": 1,
-    "full_name": "Boris",
-    "age": 20
-}
-
-###
-GET http://localhost:8080/api/CreateUser
+### @name createUser
+POST {{baseURL}}/api/users
+Content-Type: application/json
 
 {
     "full_name": "Andrew",
@@ -39,9 +13,6 @@ GET http://localhost:8080/api/CreateUser
     "phone_number": "+7183612389"
 }
 
-###
-GET http://localhost:8080/api/CreateUser
+### Удаление пользователя по номеру
+DELETE {{baseURL}}/api/users?phone=%2B7183612389
 
-{
-    "full_name": "Nikita",
-}
